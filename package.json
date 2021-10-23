@@ -1,0 +1,49 @@
+{
+  "name": "bo-planner",
+  "version": "1.0.0",
+  "description": "Generated with @larscom/ng-chrome-extension",
+  "scripts": {
+    "ng": "ng",
+    "start": "npm run watch",
+    "build:angular": "ng build --configuration development",
+    "build:angular-production": "ng build",
+    "watch:angular": "ng build --configuration development --delete-output-path false --source-map=true --plugin ~angular/sourcemaps-plugin.js",
+    "build:chrome": "webpack --config chrome/webpack.config.js",
+    "build:chrome-production": "webpack --config chrome/webpack.config.prod.js",
+    "watch:chrome": "webpack --config chrome/webpack.config.js -w",
+    "build": "npm run clean && npm run build:angular && npm run build:chrome",
+    "build:production": "npm run build:angular-production && npm run build:chrome-production && npm run pack",
+    "watch": "npm run clean && npm-run-all --parallel watch:*",
+    "clean": "rimraf angular/dist",
+    "pack": "cd angular/dist && bestzip ../../extension-build.zip *"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~12.2.0",
+    "@angular/common": "~12.2.0",
+    "@angular/compiler": "~12.2.0",
+    "@angular/core": "~12.2.0",
+    "@angular/forms": "~12.2.0",
+    "@angular/platform-browser": "~12.2.0",
+    "@angular/platform-browser-dynamic": "~12.2.0",
+    "@angular/router": "~12.2.0",
+    "ngx-build-plus": "^12.2.0",
+    "rxjs": "~6.6.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "12.1.1",
+    "@angular/cli": "~12.2.4",
+    "@angular/compiler-cli": "~12.2.0",
+    "@types/chrome": "0.0.141",
+    "@types/node": "^12.12.32",
+    "awesome-typescript-loader": "^5.2.1",
+    "bestzip": "^2.1.7",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^2.7.1",
+    "ts-node": "~10.3.0",
+    "typescript": "~4.3.5",
+    "webpack-cli": "^4.9.0"
+  }
+}

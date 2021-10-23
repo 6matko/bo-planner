@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "bo-planner",
+  "short_name": "bo-planner",
+  "version": "1.0.0",
+  "description": "Buy order planner",
+  "permissions": ["tabs"],
+  "action": {
+    "default_popup": "index.html?#/popup",
+    "default_title": "Angular Chrome Extension"
+  },
+  "options_page": "index.html?#/options",
+  "content_scripts": [
+    {
+      "js": ["contentPage.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "background": {
+    "service_worker": "serviceWorker.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
