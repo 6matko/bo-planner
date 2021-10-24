@@ -65,7 +65,7 @@ export class PopupComponent implements OnInit, OnDestroy {
         // Storing information for further usage ONLY if user is currently on item info page.
         // Otherwise we can't get any information and should show informative message so user
         // goes to specific SCM item
-        if (info.pageUrl.includes('/market/listings/')) {
+        if (info?.pageUrl?.includes('/market/listings/')) {
           this.itemInfo = info;
           // Updating form value
           this.boForm.patchValue({
