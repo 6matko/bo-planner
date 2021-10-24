@@ -1,7 +1,198 @@
-<h1>Popup</h1>
-<p>You can easily send messages from the popup to the content page with the provided Tab ID!
-  (tabId=<strong>{{ tabId }}</strong>)</p>
+<h3
+  class="
+    title
+    uppercase
+    text-xl
+    mb-3
+    mx-auto
+    text-center
+    font-bold
+    text-gray-700
+    pt-0
+  "
+>
+  Buy order planner
+</h3>
 
-<button (click)="onClick()">Click me to test</button>
+<ng-container *ngIf="itemInfo; else goToSCMListingTmpl">
+  <form
+    class="w-100 bg-white px-4 pt-4 pb-8"
+    [formGroup]="boForm"
+    (ngSubmit)="save()"
+  >
+    <div class="mb-4">
+      <label for="itemName" class="block text-gray-500 font-medium text-sm mb-2"
+        >Full item name</label
+      >
+      <input
+        [ngClass]="{ 'ring-2 ring-red-600': boForm.get('itemName').invalid }"
+        formControlName="itemName"
+        name="itemName"
+        type="text"
+        placeholder="Enter item name"
+        class="
+          bg-gray-200
+          appearance-none
+          border-2 border-gray-200
+          rounded
+          w-full
+          py-2
+          px-4
+          text-gray-700
+          leading-tight
+          focus:outline-none focus:bg-white focus:border-purple-500
+        "
+      />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label
+          for="boPrice"
+          class="block text-gray-500 font-medium text-sm mb-2"
+          >Price</label
+        >
+        <input
+          formControlName="price"
+          name="boPrice"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="Buy order price"
+          class="
+            bg-gray-200
+            appearance-none
+            border-2 border-gray-200
+            rounded
+            w-full
+            py-2
+            px-4
+            text-gray-700
+            leading-tight
+            focus:outline-none focus:bg-white focus:border-purple-500
+          "
+        />
+      </div>
+      <div>
+        <label
+          for="boAmount"
+          class="block text-gray-500 font-medium text-sm mb-2"
+          >Amount to buy</label
+        >
+        <input
+          formControlName="amount"
+          name="boAmount"
+          type="number"
+          min="1"
+          step="1"
+          placeholder="Amount to buy"
+          class="
+            bg-gray-200
+            appearance-none
+            border-2 border-gray-200
+            rounded
+            w-full
+            py-2
+            px-4
+            text-gray-700
+            leading-tight
+            focus:outline-none focus:bg-white focus:border-purple-500
+          "
+        />
+      </div>
+    </div>
+    <div class="">
+      <button
+        [disabled]="boForm.invalid"
+        [ngClass]="{ 'opacity-50 cursor-not-allowed': boForm.invalid }"
+        type="submit"
+        class="
+          w-3/5
+          block
+          mx-auto
+          shadow
+          transition
+          duration-300
+          ease-in-out
+          bg-purple-800
+          hover:bg-purple-900
+          focus:shadow-outline focus:outline-none
+          text-white
+          font-bold
+          py-2
+          px-4
+          rounded
+          mt-4
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
 
-<p><strong>{{ message }}</strong></p>
+  <div class="m-4 mt-0">
+    <button
+      type="button"
+      class="
+        w-full
+        block
+        mx-auto
+        shadow
+        transition
+        duration-300
+        ease-in-out
+        bg-green-500
+        hover:bg-green-600
+        focus:shadow-outline focus:outline-none
+        text-white
+        font-bold
+        text-xl
+        py-2
+        px-4
+        rounded
+        mb-4
+      "
+    >
+      PLACE BUY ORDER
+    </button>
+  </div>
+</ng-container>
+
+<ng-template #goToSCMListingTmpl>
+  <p class="text-lg text-center">
+    This extension works only on SCM listing page.
+  </p>
+  <div class="w-full">
+    <button
+      (click)="goToSCM()"
+      type="button"
+      rel="nofollow"
+      class="
+        w-3/5
+        block
+        text-center
+        mx-auto
+        shadow
+        transition
+        duration-300
+        ease-in-out
+        bg-yellow-600
+        hover:bg-yellow-700
+        focus:shadow-outline focus:outline-none
+        text-white
+        font-bold
+        py-2
+        px-4
+        rounded
+        mt-4
+      "
+    >
+      Go to market page
+    </button>
+  </div>
+</ng-template>
+
+<p>
+  You can easily send messages from the popup to the content page with the
+  provided Tab ID! (tabId=<strong>{{ tabId }}</strong
+  >)
+</p>
