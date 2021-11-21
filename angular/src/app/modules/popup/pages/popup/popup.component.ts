@@ -4,6 +4,7 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { bindCallback, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { BuyOrder } from '../../../../models/buy-order.model';
+import { ItemInfo } from '../../../../models/item-info.model';
 import { TAB_ID } from '../../../../providers/tab-id.provider';
 
 @Component({
@@ -12,8 +13,27 @@ import { TAB_ID } from '../../../../providers/tab-id.provider';
   styleUrls: ['popup.component.scss'],
 })
 export class PopupComponent implements OnInit, OnDestroy {
-  itemInfo: any;
+  /**
+   * Information about current item
+   *
+   * @type {ItemInfo}
+   * @memberof PopupComponent
+   */
+  itemInfo: ItemInfo;
+  /**
+   * Buy order planner form
+   *
+   * @type {FormGroup}
+   * @memberof PopupComponent
+   */
   boForm: FormGroup;
+  /**
+   * Subject that is responsible for unsubscribing when component gets destroyed
+   *
+   * @private
+   * @type {Subject<boolean>}
+   * @memberof PopupComponent
+   */
   private destroy$: Subject<boolean> = new Subject();
 
   constructor(
@@ -26,7 +46,6 @@ export class PopupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log(`I am init`);
     this.initInfo();
   }
 
@@ -36,8 +55,12 @@ export class PopupComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  /**
+   * Method saves buy order plan
+   *
+   * @memberof PopupComponent
+   */
   save() {
-    console.log(`I will save`, this.boForm.value);
     // If we have "created" property it means that buy order was already created and
     // we need to update it. Otherwise creating new one
     if (this.itemInfo.created) {
@@ -60,6 +83,11 @@ export class PopupComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Method sends signal to contentPage to open buy order modal
+   *
+   * @memberof PopupComponent
+   */
   openPlaceBuyOrderWindow() {
     chrome.tabs.sendMessage(this.tabId, {
       type: 'openBOModal',
@@ -69,6 +97,12 @@ export class PopupComponent implements OnInit, OnDestroy {
       }
     });
   }
+  /**
+   * Method initializes popup based on information gathered from current page
+   *
+   * @private
+   * @memberof PopupComponent
+   */
   private initInfo() {
     // Sending signal to content page to gather information from page itself
     bindCallback<any>(chrome.tabs.sendMessage.bind(this, this.tabId, { type: 'getInfoFromPage' }))()
@@ -76,13 +110,15 @@ export class PopupComponent implements OnInit, OnDestroy {
         // If there was an error, returning undefined. Otherwise giving info from thee page
         map(info => chrome.runtime.lastError ? undefined : info),
         switchMap(info => {
-          console.log(`Info`, info);
+          // If we have info from page then getting stored information about this item from IndexedDB
           if (info) {
             return this.dbService.getByIndex('orders', 'itemName', info.itemName)
               .pipe(map(boEntity => {
+                // Updating current info object with information from DB
                 Object.assign(info, boEntity);
                 return info;
               }))
+            // If there is no info then reeturning same info object
           } else {
             return of(info);
           }
@@ -90,8 +126,6 @@ export class PopupComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(info => {
-        console.log(`Page info`, info);
-        console.log(`I will init form`);
         // Storing information for further usage ONLY if user is currently on item info page.
         // Otherwise we can't get any information and should show informative message so user
         // goes to specific SCM item
@@ -106,14 +140,21 @@ export class PopupComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Method creates new buy order plan and stores it in DB
+   *
+   * @private
+   * @memberof PopupComponent
+   */
   private createBuyOrder() {
+    // Creating new entity based on info on form
     const newBOEntity = new BuyOrder(this.boForm.value);
+    // Saving in DB
     this.dbService.add('orders', newBOEntity)
       .pipe(
         takeUntil(this.destroy$),
       )
       .subscribe(result => {
-        console.log(result);
         // Updating form value with latest update
         this.boForm.patchValue(result);
         this.updateItemInfo(result);
@@ -123,9 +164,18 @@ export class PopupComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Method updates buy order plan and saves it to DB
+   *
+   * @private
+   * @memberof PopupComponent
+   */
   private updateBuyOrder() {
+    // Updating current item info with data in form
     const updatedBuyOrder = Object.assign(this.itemInfo, this.boForm.value);
+    // Creating entity for save
     const updatedBOEntity = new BuyOrder(updatedBuyOrder);
+    // Updating in DB
     this.dbService.update('orders', updatedBOEntity)
       .pipe(
         takeUntil(this.destroy$),

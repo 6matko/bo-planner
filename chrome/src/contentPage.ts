@@ -78,18 +78,15 @@ function getItemInfo() {
   return itemInfo;
 }
 
+/**
+ * Method updates current item information object with information about active buy orders
+ *
+ * @param {*} itemInfo Current steam item information. This object will be updated
+ */
 function setActiveBuyOrderInfo(itemInfo) {
   // Getting active buy order element. If there are no activee buy orders then it will be empty
   const activeBuyOrders = document.querySelectorAll('div[id^=mybuyorder_]');
   if (activeBuyOrders?.length) {
-    // Removing quantity element from price column.
-    // Otherwise we are getting "1000.03" if cause it displays as 1000 @ 0.03.
-    // NOTE: We need to check if that quantity exists because on new popover opening it might be 
-    // const mobileQuantity = activeBuyOrders[0].children[2].getElementsByClassName('market_listing_inline_buyorder_qty');
-    // if (mobileQuantity.length) {
-    //   activeBuyOrders[0].children[2].getElementsByClassName('market_listing_inline_buyorder_qty')[0].remove();
-    // }
-
     // Getting current active buy order amount (And converting from string to number)
     const activeBOAmount = +activeBuyOrders[0].children[3].textContent;
 
