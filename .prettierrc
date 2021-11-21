@@ -1,0 +1,19 @@
+{
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": "*.scss",
+      "options": {
+        "singleQuote": false
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular",
+        "endOfLine": "auto",
+        "bracketSameLine": true
+      }
+    }
+  ]
+}
