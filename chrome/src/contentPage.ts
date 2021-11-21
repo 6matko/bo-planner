@@ -1,11 +1,43 @@
+
 chrome.runtime.onMessage.addListener((request, sender, respond) => {
   const handler = new Promise((resolve, reject) => {
     console.log(`Request to content page:`, request);
-    switch (request) {
+    // Getting information about current Steam Item
+    const itemInfo = getItemInfo();
+    switch (request.type) {
       case 'getInfoFromPage':
-        // Getting information about current Steam Item
-        const itemInfo = getItemInfo();
         resolve(itemInfo);
+        break;
+      case 'openBOModal':
+        console.log(`I should open modal`);
+
+        // Adding our custom script to page ONLY if its yet not added
+        if (!document.scripts.namedItem('openBO')) {
+          const localFileURL = chrome.runtime.getURL('boModal.js');
+          const myScript = document.createElement('script');
+          myScript.id = 'openBO';
+          myScript.src = localFileURL;
+          document.head.appendChild(myScript);
+        }
+
+        // Sending message for listener (defined in boModal.js).
+        // With timeout we are telling for this code to execute as late as possible so listener would have
+        // time to initialize
+        setTimeout(function () {
+          console.log('SENDING MESSAGE');
+          // Posting message so this information would appear in modal
+          window.postMessage({
+            type: 'BUY_ORDER',
+            appId: 730,
+            itemName: itemInfo['itemName'],
+            price: request.data.price,
+            amount: request.data.amount,
+            // Checking if there is already an active (opened) modal for placing buy order.
+            // This is needed for case where modal is already opened and to provide value "update"
+            // ability instead of closing/opening again
+            isBuyOrderModalShown: !!document.querySelector('.newmodal[data-panel]'),
+          }, '*');
+        }, 0);
         break;
       default:
         reject('Something went wrong');

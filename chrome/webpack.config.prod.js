@@ -6,7 +6,8 @@ module.exports = {
   mode: 'production',
   entry: {
     contentPage: join(__dirname, 'src/contentPage.ts'),
-    serviceWorker: join(__dirname, 'src/serviceWorker.ts')
+    serviceWorker: join(__dirname, 'src/serviceWorker.ts'),
+    boModal: join(__dirname, 'src/bo-modal.ts'),
   },
   output: {
     path: join(__dirname, '../angular/dist'),
