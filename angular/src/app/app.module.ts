@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { DialogModule } from '@ngneat/dialog';
 import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,7 +24,13 @@ const dbConfig: DBConfig = {
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, NgxIndexedDBModule.forRoot(dbConfig)],
+  imports: [BrowserModule, AppRoutingModule, NgxIndexedDBModule.forRoot(dbConfig), DialogModule.forRoot({
+    sizes: {
+      sm: {
+        width: 500,
+      },
+    }
+  })],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

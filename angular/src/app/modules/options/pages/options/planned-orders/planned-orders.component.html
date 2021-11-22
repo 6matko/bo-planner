@@ -8,9 +8,8 @@
     gap-4
     px-3
   ">
-  <ng-container *ngIf="plannedOrders$ | async as orders">
-    <app-buy-order-item
-      *ngFor="let order of orders"
-      [orderItem]="order"></app-buy-order-item>
-  </ng-container>
+  <app-buy-order-item
+    *ngFor="let order of plannedOrders; let i = index"
+    [orderItem]="order"
+    (itemRemoved)="removeItem(i)"></app-buy-order-item>
 </div>
