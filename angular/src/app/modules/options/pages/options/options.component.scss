@@ -1,0 +1,8 @@
+.page-wrapper {
+    background-color: #e2e8f0;
+}
+
+
+.active {
+    @apply bg-indigo-500 text-white font-semibold rounded-lg shadow-md;
+}

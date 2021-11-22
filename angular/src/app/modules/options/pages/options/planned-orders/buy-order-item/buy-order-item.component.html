@@ -1,0 +1,57 @@
+<div
+  class="
+    bg-white
+    w-full
+    flex flex-col
+    items-center
+    p-2
+    pb-0
+    rounded-xl
+    shadow
+    border
+    hover:shadow-xl
+    duration-200
+  "
+  *ngIf="orderItem">
+  <div class="flex items-center w-full item-content">
+    <div class="flex items-center space-x-4">
+      <img
+        [src]="orderItem.imgUrl"
+        [attr.alt]="orderItem.itemName"
+        class="w-16 h-16" />
+    </div>
+    <div class="flex-grow p-3">
+      <div class="font-semibold text-gray-700">{{ orderItem.itemName }}</div>
+      <a
+        [href]="
+          'https://steamcommunity.com/market/listings/730/' + orderItem.itemName
+        "
+        type="button"
+        class="text-sm text-gray-500"
+        target="_blank">
+        View on market
+      </a>
+    </div>
+    <div class="p-2 text-right">
+      <div class="text-lg leading-3">{{ orderItem.price }}</div>
+      <small>x{{ orderItem.amount }}</small>
+      <hr class="divider" />
+      <div>
+        Total: <b>{{ orderItem.price * orderItem.amount | number: '1.2-2' }}</b>
+      </div>
+    </div>
+  </div>
+  <button
+    type="button"
+    class="
+      ml-auto
+      text-red-500
+      hover:text-red-700
+      duration-200
+      transition-all
+      pb-2
+      px-4
+    ">
+    Remove
+  </button>
+</div>
