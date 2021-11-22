@@ -60,7 +60,11 @@ function getItemInfo() {
   let itemInfo = {};
 
   try {
+    // Storing current page URL to make sure we are on SCM
     itemInfo['pageUrl'] = window.location.href;
+
+    // Storing link to image (used for display)
+    itemInfo['imgUrl'] = document.querySelector('.market_listing_largeimage img')?.src;
 
     // Setting information about active buy order
     setActiveBuyOrderInfo(itemInfo);

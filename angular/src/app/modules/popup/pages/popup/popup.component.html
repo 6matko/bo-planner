@@ -1,39 +1,36 @@
-<h3 class="
-    title
-    uppercase
-    text-xl
-    mb-3
-    mx-auto
-    text-center
-    font-bold
-    text-gray-700
-    pt-0
-  ">
-  Buy order planner
-</h3>
+<div id="page-wrapper">
+  <h3
+    class="
+      title
+      uppercase
+      text-xl
+      mb-3
+      mx-auto
+      text-center
+      font-bold
+      text-gray-700
+      pt-0
+    ">
+    Buy order planner
+  </h3>
 
-<ng-container *ngIf="itemInfo; else goToSCMListingTmpl">
-  <form class="w-100 bg-white px-4 pt-4" [formGroup]="boForm" (ngSubmit)="save()">
-    <div class="mb-4">
-      <label for="itemName" class="block text-gray-500 font-medium text-sm mb-2">Full item name</label>
-      <input [ngClass]="{ 'ring-2 ring-red-600': boForm.get('itemName').invalid }" formControlName="itemName"
-        name="itemName" type="text" placeholder="Enter item name" class="
-          bg-gray-200
-          appearance-none
-          border-2 border-gray-200
-          rounded
-          w-full
-          py-2
-          px-4
-          text-gray-700
-          leading-tight
-          focus:outline-none focus:bg-white focus:border-purple-500
-        " />
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label for="boPrice" class="block text-gray-500 font-medium text-sm mb-2">Price</label>
-        <input formControlName="price" name="boPrice" type="number" min="0" step="0.01" placeholder="Buy order price"
+  <ng-container *ngIf="itemInfo; else goToSCMListingTmpl">
+    <form
+      class="w-100 bg-white px-4 pt-4"
+      [formGroup]="boForm"
+      (ngSubmit)="save()">
+      <div class="mb-4">
+        <label
+          for="itemName"
+          class="block text-gray-500 font-medium text-sm mb-2"
+          >Full item name</label
+        >
+        <input
+          [ngClass]="{ 'ring-2 ring-red-600': boForm.get('itemName').invalid }"
+          formControlName="itemName"
+          name="itemName"
+          type="text"
+          placeholder="Enter item name"
           class="
             bg-gray-200
             appearance-none
@@ -47,35 +44,183 @@
             focus:outline-none focus:bg-white focus:border-purple-500
           " />
       </div>
-      <div>
-        <label for="boAmount" class="block text-gray-500 font-medium text-sm mb-2">Amount to buy</label>
-        <input formControlName="amount" name="boAmount" type="number" min="1" step="1" placeholder="Amount to buy"
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label
+            for="boPrice"
+            class="block text-gray-500 font-medium text-sm mb-2"
+            >Price</label
+          >
+          <input
+            formControlName="price"
+            name="boPrice"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Buy order price"
+            class="
+              bg-gray-200
+              appearance-none
+              border-2 border-gray-200
+              rounded
+              w-full
+              py-2
+              px-4
+              text-gray-700
+              leading-tight
+              focus:outline-none focus:bg-white focus:border-purple-500
+            " />
+        </div>
+        <div>
+          <label
+            for="boAmount"
+            class="block text-gray-500 font-medium text-sm mb-2"
+            >Amount to buy</label
+          >
+          <input
+            formControlName="amount"
+            name="boAmount"
+            type="number"
+            min="1"
+            step="1"
+            placeholder="Amount to buy"
+            class="
+              bg-gray-200
+              appearance-none
+              border-2 border-gray-200
+              rounded
+              w-full
+              py-2
+              px-4
+              text-gray-700
+              leading-tight
+              focus:outline-none focus:bg-white focus:border-purple-500
+            " />
+        </div>
+      </div>
+      <div class="">
+        <button
+          [disabled]="boForm.invalid"
+          [ngClass]="{ 'opacity-50 cursor-not-allowed': boForm.invalid }"
+          type="submit"
           class="
-            bg-gray-200
-            appearance-none
-            border-2 border-gray-200
-            rounded
-            w-full
+            w-3/5
+            block
+            mx-auto
+            shadow
+            transition
+            duration-300
+            ease-in-out
+            bg-purple-800
+            hover:bg-purple-900
+            focus:shadow-outline focus:outline-none
+            text-white
+            font-bold
             py-2
             px-4
-            text-gray-700
-            leading-tight
-            focus:outline-none focus:bg-white focus:border-purple-500
-          " />
+            rounded
+            mt-4
+          ">
+          Save
+        </button>
       </div>
-    </div>
-    <div class="">
-      <button [disabled]="boForm.invalid" [ngClass]="{ 'opacity-50 cursor-not-allowed': boForm.invalid }" type="submit"
+    </form>
+
+    <div
+      class="m-4 mt-0 pt-8"
+      *ngIf="!itemInfo?.activeBOPrice || !itemInfo?.activeBOAmount">
+      <button
+        (click)="openPlaceBuyOrderWindow()"
+        type="button"
         class="
-          w-3/5
+          w-full
           block
           mx-auto
           shadow
           transition
           duration-300
           ease-in-out
-          bg-purple-800
-          hover:bg-purple-900
+          bg-green-500
+          hover:bg-green-600
+          focus:shadow-outline focus:outline-none
+          text-white
+          font-bold
+          text-xl
+          py-2
+          px-4
+          rounded
+          mb-4
+        ">
+        PLACE BUY ORDER
+      </button>
+    </div>
+
+    <div
+      *ngIf="itemInfo?.activeBOPrice && itemInfo?.activeBOAmount"
+      class="
+        bg-yellow-100
+        border-l-4 border-yellow-500
+        text-yellow-700
+        p-4
+        mt-6
+      "
+      role="alert">
+      <div class="flex justify-between font-bold text-sm">
+        <p>Active buy order</p>
+        <p>
+          {{ itemInfo?.activeBOAmount }} x {{ itemInfo?.activeBOPriceString }}
+        </p>
+      </div>
+      <p>You already have an active buy order for this item.</p>
+    </div>
+  </ng-container>
+
+  <ng-template #goToSCMListingTmpl>
+    <div
+      class="
+        bg-green-50
+        border-t-4 border-green-400
+        rounded-b
+        text-green-600
+        px-4
+        py-3
+        shadow-md
+      "
+      role="alert">
+      <div class="flex">
+        <div class="py-1">
+          <svg
+            class="fill-current h-6 w-6 text-green-400 mr-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20">
+            <path
+              d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+          </svg>
+        </div>
+        <div class="flex items-center">
+          <p class="font-bold text-sm">
+            This extension works only on SCM listing page.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full">
+      <button
+        (click)="goToSCM()"
+        type="button"
+        rel="nofollow"
+        class="
+          w-3/5
+          block
+          text-center
+          mx-auto
+          shadow
+          transition
+          duration-300
+          ease-in-out
+          bg-yellow-600
+          hover:bg-yellow-700
           focus:shadow-outline focus:outline-none
           text-white
           font-bold
@@ -84,97 +229,12 @@
           rounded
           mt-4
         ">
-        Save
+        Go to market page
       </button>
     </div>
-  </form>
+  </ng-template>
 
-  <div class="m-4 mt-0 pt-8" *ngIf="!itemInfo?.activeBOPrice || !itemInfo?.activeBOAmount">
-    <button (click)="openPlaceBuyOrderWindow()" type="button" class="
-        w-full
-        block
-        mx-auto
-        shadow
-        transition
-        duration-300
-        ease-in-out
-        bg-green-500
-        hover:bg-green-600
-        focus:shadow-outline focus:outline-none
-        text-white
-        font-bold
-        text-xl
-        py-2
-        px-4
-        rounded
-        mb-4
-      ">
-      PLACE BUY ORDER
-    </button>
-  </div>
-
-  <div *ngIf="itemInfo?.activeBOPrice && itemInfo?.activeBOAmount"
-    class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mt-6" role="alert">
-    <div class="flex justify-between font-bold text-sm">
-      <p>Active buy order</p>
-      <p>
-        {{ itemInfo?.activeBOAmount }} x {{ itemInfo?.activeBOPriceString }}
-      </p>
-    </div>
-    <p>You already have an active buy order for this item.</p>
-  </div>
-</ng-container>
-
-<ng-template #goToSCMListingTmpl>
-  <div class="
-      bg-green-50
-      border-t-4 border-green-400
-      rounded-b
-      text-green-600
-      px-4
-      py-3
-      shadow-md
-    " role="alert">
-    <div class="flex">
-      <div class="py-1">
-        <svg class="fill-current h-6 w-6 text-green-400 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-          <path
-            d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-        </svg>
-      </div>
-      <div class="flex items-center">
-        <p class="font-bold text-sm">
-          This extension works only on SCM listing page.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <div class="w-full">
-    <button (click)="goToSCM()" type="button" rel="nofollow" class="
-        w-3/5
-        block
-        text-center
-        mx-auto
-        shadow
-        transition
-        duration-300
-        ease-in-out
-        bg-yellow-600
-        hover:bg-yellow-700
-        focus:shadow-outline focus:outline-none
-        text-white
-        font-bold
-        py-2
-        px-4
-        rounded
-        mt-4
-      ">
-      Go to market page
-    </button>
-  </div>
-</ng-template>
-
-<p *ngIf="itemInfo?.updated">
-  Last update: {{ itemInfo.updated | date: "medium" }}
-</p>
+  <p *ngIf="itemInfo?.updated">
+    Last update: {{ itemInfo.updated | date: 'medium' }}
+  </p>
+</div>

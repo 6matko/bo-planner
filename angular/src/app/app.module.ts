@@ -12,6 +12,7 @@ const dbConfig: DBConfig = {
     storeConfig: { keyPath: 'id', autoIncrement: true },
     storeSchema: [
       { name: 'itemName', keypath: 'itemName', options: { unique: true } },
+      { name: 'imgUrl', keypath: 'imgUrl', options: { unique: true } },
       { name: 'price', keypath: 'price', options: { unique: false } },
       { name: 'amount', keypath: 'amount', options: { unique: false } },
       { name: 'created', keypath: 'created', options: { unique: false } },
