@@ -9,8 +9,6 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
         resolve(itemInfo);
         break;
       case 'openBOModal':
-        console.log(`I should open modal`);
-
         // Adding our custom script to page ONLY if its yet not added
         if (!document.scripts.namedItem('openBO')) {
           const localFileURL = chrome.runtime.getURL('boModal.js');
@@ -28,7 +26,7 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
           // Posting message so this information would appear in modal
           window.postMessage({
             type: 'BUY_ORDER',
-            appId: 730,
+            appId: itemInfo['appId'],
             itemName: itemInfo['itemName'],
             price: request.data.price,
             amount: request.data.amount,
@@ -65,6 +63,12 @@ function getItemInfo() {
 
     // Storing link to image (used for display)
     itemInfo['imgUrl'] = document.querySelector('.market_listing_largeimage img')?.src;
+
+    // Getting url with app id from navigation (its always first element) for quick access
+    const urlWithAppId = document.querySelector('.market_listing_nav a').href;
+    // Converting URL string to URL object and getting "appid" param.
+    // With "+" converting it to number because we know its numeric value
+    itemInfo['appId'] = +new URL(urlWithAppId).searchParams.get('appid');
 
     // Setting information about active buy order
     setActiveBuyOrderInfo(itemInfo);

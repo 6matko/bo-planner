@@ -24,7 +24,10 @@
       <div class="font-semibold text-gray-700">{{ orderItem.itemName }}</div>
       <a
         [href]="
-          'https://steamcommunity.com/market/listings/730/' + orderItem.itemName
+          'https://steamcommunity.com/market/listings/' +
+          orderItem.appId +
+          '/' +
+          orderItem.itemName
         "
         type="button"
         class="text-sm text-gray-500"

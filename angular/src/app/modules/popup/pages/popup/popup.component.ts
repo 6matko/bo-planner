@@ -207,6 +207,7 @@ export class PopupComponent implements OnInit, OnDestroy {
       price: [0, [Validators.min(0), Validators.required]],
       amount: [1, [Validators.min(1), Validators.required]],
       imgUrl: [''],
+      appId: [null],
     });
   }
 }
