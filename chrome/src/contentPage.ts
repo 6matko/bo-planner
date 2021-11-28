@@ -75,8 +75,8 @@ function getItemInfo() {
 
     // If we found breadcrumbs then getting name from it and assigning to resulting object
     if (breadcrumbs?.length) {
-      const lastItemIndex = document.querySelectorAll('.market_listing_nav')[0].children.length - 1;
-      itemInfo['itemName'] = document.querySelectorAll('.market_listing_nav')[0].children[lastItemIndex].textContent;
+      // NOTE: Getting only that breadcrumb which includes link to listing page
+      itemInfo['itemName'] = document.querySelectorAll('.market_listing_nav a[href^="https://steamcommunity.com/market/listings/"]')[0]?.textContent;
     }
   } catch (error) {
     // On error clearing result item info to indicate that something was wrong

@@ -14,7 +14,7 @@ const dbConfig: DBConfig = {
     storeSchema: [
       { name: 'itemName', keypath: 'itemName', options: { unique: true } },
       { name: 'imgUrl', keypath: 'imgUrl', options: { unique: true } },
-      { name: 'appId', keypath: 'appId', options: { unique: true } },
+      { name: 'appId', keypath: 'appId', options: { unique: false } },
       { name: 'price', keypath: 'price', options: { unique: false } },
       { name: 'amount', keypath: 'amount', options: { unique: false } },
       { name: 'created', keypath: 'created', options: { unique: false } },
