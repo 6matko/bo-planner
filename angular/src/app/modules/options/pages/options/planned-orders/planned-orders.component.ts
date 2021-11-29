@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { concatMap, debounceTime, takeUntil } from 'rxjs/operators';
 import { BuyOrder } from '../../../../../models/buy-order.model';
 
@@ -10,18 +10,67 @@ import { BuyOrder } from '../../../../../models/buy-order.model';
   styleUrls: ['./planned-orders.component.scss']
 })
 export class PlannedOrdersComponent implements OnInit, OnDestroy {
-  ordersForDisplay$: Observable<BuyOrder[]>;
+  /**
+   * Model for search text input binding
+   *
+   * @type {string}
+   * @memberof PlannedOrdersComponent
+   */
   searchText: string;
+  /**
+   * Amount of found results after filtration
+   *
+   * @type {number}
+   * @memberof PlannedOrdersComponent
+   */
   foundResults: number;
+  /**
+   * List with all orders for display. Used for pagination
+   *
+   * @type {BuyOrder[]}
+   * @memberof PlannedOrdersComponent
+   */
   allOrdersForDisplay: BuyOrder[] = [];
+  /**
+   * List with current page items for display (from pagination)
+   *
+   * @type {BuyOrder[]}
+   * @memberof PlannedOrdersComponent
+   */
   currentPageItems: BuyOrder[] = [];
+  /**
+   * Flag indicates if show per page option dropdown is opened
+   *
+   * @type {boolean}
+   * @memberof PlannedOrdersComponent
+   */
   dropdownOpen: boolean = false;
+  /**
+   * Number of items per page
+   *
+   * @type {number}
+   * @memberof PlannedOrdersComponent
+   */
   showPerPage: number = 18;
+  /**
+   * Available options of page size that user can select from
+   *
+   * @type {number[]}
+   * @memberof PlannedOrdersComponent
+   */
   showPerPageOptions: number[] = [9, 18, 27, 36];
+  /**
+   * Behavior Subject that receives search text value to filter results
+   *
+   * @private
+   * @type {BehaviorSubject<string>}
+   * @memberof PlannedOrdersComponent
+   */
   private searchSubject: BehaviorSubject<string> = new BehaviorSubject('');
   /**
    * List with planned orders for display
    *
+   * @private
    * @type {BuyOrder[]}
    * @memberof PlannedOrdersComponent
    */
@@ -37,14 +86,13 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
   constructor(
     private dbService: NgxIndexedDBService,
   ) {
-    this.dbService.getAll('orders');
+
   }
 
   ngOnInit() {
     this.dbService.getAll<BuyOrder>('orders')
       .subscribe(orders => {
         this.plannedOrders = orders;
-        // this.ordersForDisplay = [...orders];
       });
 
     // Subscribing to search input changes
@@ -61,7 +109,8 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.destroy$)
         // tap(results => this.foundResults = results.length),
-      ).subscribe(filteredResults => {
+      )
+      .subscribe(filteredResults => {
         // Storing amount of found results just for display
         this.foundResults = filteredResults.length;
         // Storing results for display
@@ -79,7 +128,14 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
     this.searchSubject.next(searchText);
   }
 
+  /**
+   * Method fills planned buy order list for display after page changed
+   *
+   * @param {BuyOrder[]} pageOfItems New items for displayy
+   * @memberof PlannedOrdersComponent
+   */
   onChangePage(pageOfItems: BuyOrder[]) {
+    // Setting items that will be displayed
     this.currentPageItems = pageOfItems;
   }
 
