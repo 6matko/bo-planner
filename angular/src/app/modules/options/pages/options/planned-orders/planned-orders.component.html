@@ -122,6 +122,7 @@
       (itemRemoved)="removeItem(i)"></app-buy-order-item>
   </div>
   <app-pagination
+    #pagination
     [items]="allOrdersForDisplay"
     [pageSize]="showPerPage"
     (changePage)="onChangePage($event)"></app-pagination>

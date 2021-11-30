@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { concatMap, debounceTime, takeUntil } from 'rxjs/operators';
 import { CURRENCY } from '../../../../../core/currencies';
+import { PaginationComponent } from '../../../../../core/pagination/pagination.component';
 import { BuyOrder } from '../../../../../models/buy-order.model';
 
 @Component({
@@ -68,6 +69,14 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
    */
   currencySign: string;
   /**
+   * Reference to pagination component which holds many useful information
+   *
+   * @private
+   * @type {PaginationComponent}
+   * @memberof PlannedOrdersComponent
+   */
+  @ViewChild('pagination') private pagination: PaginationComponent;
+  /**
    * Behavior Subject that receives search text value to filter results
    *
    * @private
@@ -93,6 +102,7 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
   private destroy$: Subject<boolean> = new Subject();
   constructor(
     private dbService: NgxIndexedDBService,
+    private cdr: ChangeDetectorRef,
   ) {
 
   }
@@ -172,10 +182,27 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
   /**
    * Method removes planned order from list
    *
-   * @param {number} index Index of element to remove
+   * @param {number} currentPageIndex Index of element for removal on current page. Its not index in all list
    * @memberof PlannedOrdersComponent
    */
-  removeItem(index: number) {
-    this.plannedOrders.splice(index);
+  removeItem(currentPageIndex: number) {
+    // Getting index of item to remove among all items, not on current page
+    const indexForRemoval = this.pagination.pager.startIndex + currentPageIndex;
+    // Removing element from list of all items so after page change it won't appear again
+    // NOTE: We are removing from two lists because one remains as original and the other one is
+    // used for display and filtering
+    this.pagination.items.splice(indexForRemoval, 1);
+    this.plannedOrders.splice(indexForRemoval, 1);
+    // Removing element from current page so it disappears
+    this.currentPageItems.splice(currentPageIndex, 1);
+
+    // Decreasing found result counter since element was removed
+    this.foundResults--;
+
+    // If there are no more items on current page then going back to previous page.
+    // If user is currently on first page then it will trigger pagination recreate anyways
+    if (!this.currentPageItems.length) {
+      this.pagination.setPage(this.pagination.pager.currentPage - 1)
+    }
   }
 }
