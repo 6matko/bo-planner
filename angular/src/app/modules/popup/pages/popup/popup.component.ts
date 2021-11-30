@@ -84,6 +84,18 @@ export class PopupComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Method opens a new tab with planned buy order list (options page)
+   *
+   * @memberof PopupComponent
+   */
+  goToPlannedList() {
+    chrome.runtime.openOptionsPage(() => {
+      // Closing popup after redirect
+      window.close();
+    });
+  }
+
+  /**
    * Method sends signal to contentPage to open buy order modal
    *
    * @memberof PopupComponent
