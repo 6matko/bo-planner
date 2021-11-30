@@ -3,7 +3,7 @@
   "name": "bo-planner",
   "short_name": "bo-planner",
   "version": "1.0.0",
-  "description": "Buy order planner",
+  "description": "Buy Order Planner",
   "permissions": ["tabs", "scripting"],
   "host_permissions": ["http://*/", "https://*/"],
   "action": {
@@ -14,7 +14,7 @@
   "content_scripts": [
     {
       "js": ["contentPage.js"],
-      "matches": ["<all_urls>"]
+      "matches": ["https://steamcommunity.com/*"]
     }
   ],
   "background": {
@@ -25,8 +25,8 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/market.js", "boModal.js"],
-      "matches": ["<all_urls>"]
+      "resources": ["boModal.js"],
+      "matches": ["https://steamcommunity.com/*"]
     }
   ]
 }
