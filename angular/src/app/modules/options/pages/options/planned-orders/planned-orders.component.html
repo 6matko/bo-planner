@@ -118,6 +118,7 @@
     <app-buy-order-item
       *ngFor="let order of currentPageItems; let i = index"
       [orderItem]="order"
+      [currencySign]="currencySign"
       (itemRemoved)="removeItem(i)"></app-buy-order-item>
   </div>
   <app-pagination

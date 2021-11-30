@@ -9,15 +9,7 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
         resolve(itemInfo);
         break;
       case 'openBOModal':
-        // Adding our custom script to page ONLY if its yet not added
-        if (!document.scripts.namedItem('openBO')) {
-          const localFileURL = chrome.runtime.getURL('boModal.js');
-          const myScript = document.createElement('script');
-          myScript.id = 'openBO';
-          myScript.src = localFileURL;
-          document.head.appendChild(myScript);
-        }
-
+        addCustomScript();
         // Sending message for listener (defined in boModal.js).
         // With timeout we are telling for this code to execute as late as possible so listener would have
         // time to initialize
@@ -47,6 +39,19 @@ chrome.runtime.onMessage.addListener((request, sender, respond) => {
   return true;
 });
 
+
+
+function addCustomScript() {
+  // Adding our custom script to page ONLY if its yet not added
+  if (!document.scripts.namedItem('openBO')) {
+    const localFileURL = chrome.runtime.getURL('boModal.js');
+    const myScript = document.createElement('script');
+    myScript.id = 'openBO';
+    myScript.src = localFileURL;
+    document.head.appendChild(myScript);
+  }
+}
+
 /**
  * Method gathers required information about Steam Item
  *
@@ -60,6 +65,8 @@ function getItemInfo() {
   try {
     // Storing current page URL to make sure we are on SCM
     itemInfo['pageUrl'] = window.location.href;
+
+    itemInfo['currencyId'] = getCurrencyIdFromPage();
 
     // Storing link to image (used for display)
     itemInfo['imgUrl'] = document.querySelector('.market_listing_largeimage img')?.src;
@@ -127,4 +134,34 @@ function getNumericPrice(currencyString) {
   // Converting currency string to numeric value
   // Src: https://stackoverflow.com/a/559178
   return Number(currencyString.replace(/[^0-9.-]+/g, ''));
+}
+
+/**
+ * Method finds ID of wallet currency from inline script
+ *
+ * @return {number} Returns currency ID of current user that is found in inline script (as global variable)
+ */
+function getCurrencyIdFromPage() {
+  // Resulting currency ID
+  let currencyId;
+
+  // Getting list of all scripts on page because we need to find
+  // information about current currency from there. Otherwise we would need to
+  // access those values via window postMessage & listeners. So far its the best
+  // way I could think of
+  const allScripts = document.querySelectorAll('script');
+  allScripts.forEach(elem => {
+    // Searching for the one that has information about currency
+    if (elem.innerText.includes('"wallet_currency"')) {
+      // Using RegExp to get string that matches our requirements
+      const regExp = new RegExp(/wallet_currency":[0-9]{1,}/, 'g');
+      const foundString = elem.innerText.match(regExp);
+      // If we have matching string then replacing all extra stuff by
+      // leaving only ID which is as string and with "+" we convert it to numeric value
+      if (foundString?.length) {
+        currencyId = +foundString[0].replace('wallet_currency":', '');
+      }
+    }
+  });
+  return currencyId;
 }

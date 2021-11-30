@@ -36,11 +36,17 @@
       </a>
     </div>
     <div class="p-2 text-right">
-      <div class="text-lg leading-3">{{ orderItem.price }}</div>
+      <div class="text-lg leading-3">
+        {{ orderItem.price | number: '1.2-2' }}{{ currencySign }}
+      </div>
       <small>x{{ orderItem.amount }}</small>
       <hr class="divider" />
       <div>
-        Total: <b>{{ orderItem.price * orderItem.amount | number: '1.2-2' }}</b>
+        Total:
+        <b>
+          {{ orderItem.price * orderItem.amount | number: '1.2-2'
+          }}{{ currencySign }}
+        </b>
       </div>
     </div>
   </div>

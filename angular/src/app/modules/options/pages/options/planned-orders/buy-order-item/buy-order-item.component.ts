@@ -25,6 +25,13 @@ export class BuyOrderItemComponent implements OnInit {
    * @memberof BuyOrderItemComponent
    */
   @Output() itemRemoved: EventEmitter<BuyOrder> = new EventEmitter();
+  /**
+   * Currency sign for visual display
+   *
+   * @type {string}
+   * @memberof BuyOrderItemComponent
+   */
+  @Input() currencySign: string;
   constructor(
     private dialog: DialogService,
     private dbService: NgxIndexedDBService,

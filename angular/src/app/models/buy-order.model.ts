@@ -36,6 +36,13 @@ export class BuyOrder extends BaseEntity {
      * @memberof BuyOrder
      */
     appId: number;
+    /**
+     * Id of currency
+     *
+     * @type {number}
+     * @memberof BuyOrder
+     */
+    currencyId: number;
     constructor(data: BuyOrder) {
         super();
         // Assigning data to current instance
