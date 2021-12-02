@@ -1,9 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "bo-planner",
+  "name": "Buy Order Planner",
   "short_name": "bo-planner",
   "version": "1.0.0",
-  "description": "Buy Order Planner",
+  "description": "Plan Steam Community Market buy orders",
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
   "permissions": ["tabs", "scripting"],
   "host_permissions": ["http://*/", "https://*/"],
   "action": {
