@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Buy Order Planner",
+  "short_name": "bo-planner",
+  "version": "1.0.0",
+  "description": "Plan Steam Community Market buy orders",
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "permissions": ["tabs", "scripting"],
+  "host_permissions": ["http://*/", "https://*/"],
+  "action": {
+    "default_popup": "index.html?#/popup",
+    "default_title": "Buy Order Planner"
+  },
+  "options_page": "index.html?#/options",
+  "content_scripts": [
+    {
+      "js": ["contentPage.js"],
+      "matches": ["https://steamcommunity.com/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "serviceWorker.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["boModal.js"],
+      "matches": ["https://steamcommunity.com/*"]
+    }
+  ]
+}
