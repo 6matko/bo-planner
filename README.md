@@ -14,6 +14,7 @@ _This extension was created to ease the process of buy order creation and give a
   - Remove planned buy order
 - Quickly open native "Set buy order" modal (via popup)
   - Price & amount fields will be automatically filled with your values
+- Manually add items from any page (via popup)
 
 ## Built With
 
