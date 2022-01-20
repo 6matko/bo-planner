@@ -1,26 +1,7 @@
 <div
-  class="
-    bg-white
-    w-full
-    flex flex-col
-    items-center
-    p-2
-    pb-0
-    rounded-xl
-    shadow
-    border
-    hover:shadow-xl
-    duration-200
-    animate__animated animate__fadeIn
-  "
+  class="bg-white w-full flex flex-col items-center p-2 pb-0 rounded-xl shadow border hover:shadow-xl duration-200 animate__animated animate__fadeIn"
   *ngIf="orderItem">
   <div class="flex items-center w-full item-content">
-    <div class="flex items-center space-x-4">
-      <img
-        [src]="orderItem.imgUrl"
-        [attr.alt]="orderItem.itemName"
-        class="w-16 h-16" />
-    </div>
     <div class="flex-grow p-3">
       <div class="font-semibold text-gray-700">{{ orderItem.itemName }}</div>
       <a
@@ -53,15 +34,7 @@
   </div>
   <button
     type="button"
-    class="
-      ml-auto
-      text-red-500
-      hover:text-red-700
-      duration-200
-      transition-all
-      pb-2
-      px-4
-    "
+    class="ml-auto text-red-500 hover:text-red-700 duration-200 transition-all pb-2 px-4"
     (click)="removeItem()">
     Remove
   </button>

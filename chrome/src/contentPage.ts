@@ -68,9 +68,6 @@ function getItemInfo() {
 
     itemInfo['currencyId'] = getCurrencyIdFromPage();
 
-    // Storing link to image (used for display)
-    itemInfo['imgUrl'] = document.querySelector('.market_listing_largeimage img')?.src;
-
     // Getting url with app id from navigation (its always first element) for quick access
     const urlWithAppId = document.querySelector('.market_listing_nav a').href;
     // Converting URL string to URL object and getting "appid" param.

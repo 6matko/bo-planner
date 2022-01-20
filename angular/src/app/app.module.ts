@@ -7,13 +7,12 @@ import { AppComponent } from './app.component';
 
 const dbConfig: DBConfig = {
   name: 'boPlanner',
-  version: 1,
+  version: 2,
   objectStoresMeta: [{
     store: 'orders',
     storeConfig: { keyPath: 'id', autoIncrement: true },
     storeSchema: [
       { name: 'itemName', keypath: 'itemName', options: { unique: true } },
-      { name: 'imgUrl', keypath: 'imgUrl', options: { unique: true } },
       { name: 'appId', keypath: 'appId', options: { unique: false } },
       { name: 'currencyId', keypath: 'currencyId', options: { unique: false } },
       { name: 'price', keypath: 'price', options: { unique: false } },
