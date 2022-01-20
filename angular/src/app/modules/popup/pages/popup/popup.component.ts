@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { bindCallback, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { CURRENCY } from '../../../../core/currencies';
 import { BuyOrder } from '../../../../models/buy-order.model';
 import { ItemInfo } from '../../../../models/item-info.model';
 import { TAB_ID } from '../../../../providers/tab-id.provider';
@@ -27,6 +28,26 @@ export class PopupComponent implements OnInit, OnDestroy {
    * @memberof PopupComponent
    */
   boForm: FormGroup;
+  /**
+   * Indicates if user wants to manually add information
+   *
+   * @type {boolean}
+   * @memberof PopupComponent
+   */
+  isManualAdding: boolean = false;
+  /**
+   * Indicates if manual adding was succcessful
+   *
+   * @type {boolean}
+   * @memberof PopupComponent
+   */
+  isManualSuccess: boolean = false;
+  /**
+   * List of known currencies
+   *
+   * @memberof PopupComponent
+   */
+  currencies = CURRENCY;
   /**
    * Subject that is responsible for unsubscribing when component gets destroyed
    *
@@ -63,7 +84,7 @@ export class PopupComponent implements OnInit, OnDestroy {
   save() {
     // If we have "created" property it means that buy order was already created and
     // we need to update it. Otherwise creating new one
-    if (this.itemInfo.created) {
+    if (!this.isManualAdding && this.itemInfo.created) {
       this.updateBuyOrder();
     } else {
       this.createBuyOrder();
@@ -109,6 +130,28 @@ export class PopupComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  /**
+   * Method marks manual adding as enabled with all necessary setup
+   *
+   * @memberof PopupComponent
+   */
+  openManualAdd() {
+    this.isManualAdding = true;
+    // Adding REQUIRED validators cause we need values
+    this.boForm.get('appId').setValidators(Validators.required);
+    this.boForm.get('currencyId').setValidators(Validators.required);
+  }
+
+  /**
+   * Method clears success message (hide from display)
+   *
+   * @memberof PopupComponent
+   */
+  clearSuccessMessage() {
+    this.isManualSuccess = false;
+  }
+
   /**
    * Method initializes popup based on information gathered from current page
    *
@@ -161,15 +204,24 @@ export class PopupComponent implements OnInit, OnDestroy {
   private createBuyOrder() {
     // Creating new entity based on info on form
     const newBOEntity = new BuyOrder(this.boForm.value);
+
     // Saving in DB
     this.dbService.add('orders', newBOEntity)
       .pipe(
         takeUntil(this.destroy$),
       )
       .subscribe(result => {
-        // Updating form value with latest update
-        this.boForm.patchValue(result);
-        this.updateItemInfo(result);
+        // If user manually adds item then displaying success and resetting form
+        // so he can do it again
+        if (this.isManualAdding) {
+          this.boForm.reset({ price: 0, amount: 1 });
+          this.boForm.markAsUntouched();
+          this.isManualSuccess = true;
+        } else {
+          // Updating form value with latest update
+          this.boForm.patchValue(result);
+          this.updateItemInfo(result);
+        }
         // Triggering change detection since there are changes that view needs to re-render
         // and for some reason it doesn't happen automatically. Maybe due chrome extension
         this.cdr.detectChanges();
