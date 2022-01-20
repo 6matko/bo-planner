@@ -164,6 +164,14 @@
         <p>Item was added</p>
       </div>
     </div>
+    <div
+      *ngIf="error"
+      class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mt-6 mb-3"
+      role="alert">
+      <div class="flex justify-between font-bold text-md">
+        <p>{{ error }}</p>
+      </div>
+    </div>
   </ng-container>
 
   <ng-template #goToSCMListingTmpl>

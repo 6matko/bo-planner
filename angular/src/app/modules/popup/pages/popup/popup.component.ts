@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { bindCallback, of, Subject } from 'rxjs';
+import { bindCallback, of, Subject, throwError } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CURRENCY } from '../../../../core/currencies';
 import { BuyOrder } from '../../../../models/buy-order.model';
@@ -48,6 +48,13 @@ export class PopupComponent implements OnInit, OnDestroy {
    * @memberof PopupComponent
    */
   currencies = CURRENCY;
+  /**
+   * Error message
+   *
+   * @type {string}
+   * @memberof PopupComponent
+   */
+  error: string = '';
   /**
    * Subject that is responsible for unsubscribing when component gets destroyed
    *
@@ -205,9 +212,17 @@ export class PopupComponent implements OnInit, OnDestroy {
     // Creating new entity based on info on form
     const newBOEntity = new BuyOrder(this.boForm.value);
 
-    // Saving in DB
-    this.dbService.add('orders', newBOEntity)
+    // Checking if item with same name is already added
+    this.dbService.getByIndex('orders', 'itemName', newBOEntity.itemName)
       .pipe(
+        switchMap(item => {
+          // If item exists then throwing error
+          if (item) {
+            return throwError('Item with this name already exists');
+          }
+          // Otherwise adding item
+          return this.dbService.add('orders', newBOEntity);
+        }),
         takeUntil(this.destroy$),
       )
       .subscribe(result => {
@@ -222,9 +237,16 @@ export class PopupComponent implements OnInit, OnDestroy {
           this.boForm.patchValue(result);
           this.updateItemInfo(result);
         }
+
+        // Clearing error message when all is done
+        this.error = ''
+
         // Triggering change detection since there are changes that view needs to re-render
         // and for some reason it doesn't happen automatically. Maybe due chrome extension
         this.cdr.detectChanges();
+      }, err => {
+        // Setting error message for display
+        this.error = err;
       });
   }
 
