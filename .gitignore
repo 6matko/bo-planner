@@ -2,7 +2,6 @@
 
 # compiled output
 .firebase/
-dist
 # dependencies
 node_modules
 
