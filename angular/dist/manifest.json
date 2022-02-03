@@ -9,8 +9,13 @@
     "48": "assets/icon48.png",
     "128": "assets/icon128.png"
   },
-  "permissions": ["tabs", "scripting"],
-  "host_permissions": ["http://*/", "https://*/"],
+  "permissions": [
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://*/",
+    "https://*/"
+  ],
   "action": {
     "default_popup": "index.html?#/popup",
     "default_title": "Buy Order Planner"
@@ -18,8 +23,12 @@
   "options_page": "index.html?#/options",
   "content_scripts": [
     {
-      "js": ["contentPage.js"],
-      "matches": ["https://steamcommunity.com/*"]
+      "js": [
+        "contentPage.js"
+      ],
+      "matches": [
+        "https://steamcommunity.com/*"
+      ]
     }
   ],
   "background": {
@@ -30,8 +39,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["boModal.js"],
-      "matches": ["https://steamcommunity.com/*"]
+      "resources": [
+        "boModal.js"
+      ],
+      "matches": [
+        "https://steamcommunity.com/*"
+      ]
     }
   ]
 }
