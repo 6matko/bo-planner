@@ -1,4 +1,6 @@
-export const CURRENCY = [
+import { Currency } from '../models/base.model';
+
+export const CURRENCY: Currency[] = [
     {
         'code': 'USD',
         'currencyId': 1,

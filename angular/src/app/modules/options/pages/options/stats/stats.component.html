@@ -9,7 +9,7 @@
       <div class="flex justify-center w-full px-5 pt-3 text-sm text-gray-400">
         <p class="text-center">Total added</p>
       </div>
-      <p class="pb-4 text-3xl text-center">140</p>
+      <p class="pb-4 text-3xl text-center">{{stats.totalOrders}}</p>
     </div>
   </div>
 
@@ -22,7 +22,7 @@
       <div class="flex justify-center w-full px-5 pt-3 text-sm text-gray-400">
         <p class="text-center">Combined amount</p>
       </div>
-      <p class="pb-4 text-3xl text-center">43242</p>
+      <p class="pb-4 text-3xl text-center">{{stats.totalAmount}}</p>
     </div>
   </div>
 
@@ -35,7 +35,7 @@
       <div class="flex justify-center w-full px-5 pt-3 text-sm text-gray-400">
         <p class="text-center">Combined required</p>
       </div>
-      <p class="pb-4 text-3xl text-center">1403.20 EUR</p>
+      <p class="pb-4 text-3xl text-center">{{stats.totalPrice | number:'1.2-2'}} EUR</p>
     </div>
   </div>
 </div>

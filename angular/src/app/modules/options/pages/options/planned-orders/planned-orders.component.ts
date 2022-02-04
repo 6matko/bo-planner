@@ -1,10 +1,9 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { BehaviorSubject, of, Subject } from 'rxjs';
 import { concatMap, debounceTime, takeUntil } from 'rxjs/operators';
-import { CURRENCY } from '../../../../../core/currencies';
 import { PaginationComponent } from '../../../../../core/pagination/pagination.component';
 import { BuyOrder } from '../../../../../models/buy-order.model';
+import { OptionsFacade } from '../../../options.facade';
 
 @Component({
   selector: 'app-planned-orders',
@@ -101,21 +100,22 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
    */
   private destroy$: Subject<boolean> = new Subject();
   constructor(
-    private dbService: NgxIndexedDBService,
+    private optionsFacade: OptionsFacade,
     private cdr: ChangeDetectorRef,
   ) {
 
   }
 
   ngOnInit() {
-    this.dbService.getAll<BuyOrder>('orders')
+    this.optionsFacade.getPlannedOrders()
       .subscribe(orders => {
         this.plannedOrders = orders;
         // Getting currency sign for display if we have at least one planned order because
         // currency id is stored on planned order level
         if (this.plannedOrders.length) {
-          // Finding necessary currency from stored list and using its symbol
-          this.currencySign = CURRENCY.find(currency => currency.currencyId === this.plannedOrders[0].currencyId)?.symbol ?? '';
+          // Finding necessary currency from stored list
+          // ...and using its symbol
+          this.currencySign = this.optionsFacade.getCurrency()?.symbol ?? '';
         }
       });
 
