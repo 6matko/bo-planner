@@ -64,9 +64,10 @@ export class StatsComponent implements OnInit, OnDestroy {
       this.stats.totalPrice += order.amount * order.price;
     }
 
-    this.stats.topItemsByAmount = orders.sort((a, b) => a.amount - b.amount).splice(0, 5);
-    this.stats.topItemsByPrice = orders.sort((a, b) => a.price - b.price).splice(0, 5);
-    this.stats.topItemsByPrice = orders.sort((a, b) => (a.price * a.amount) - (b.price * b.amount)).splice(0, 5);
+    // Getting top items and taking only necessary amount of items for display (5)
+    this.stats.topItemsByAmount = [...orders].sort((a, b) => b.amount - a.amount).splice(0, 5);
+    this.stats.topItemsByPrice = [...orders].sort((a, b) => b.price - a.price).splice(0, 5);
+    this.stats.topItemsByTotalPrice = [...orders].sort((a, b) => (b.price * b.amount) - (a.price * a.amount)).splice(0, 5);
 
     // Fixing floating for price (Taking only 2 digits after comma)
     this.stats.totalPrice = +this.stats.totalPrice.toFixed(2);

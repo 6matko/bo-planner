@@ -47,7 +47,7 @@
         <div class="w-11/12 mx-auto">
           <div class="bg-white mb-6">
             <div class="py-4 text-xl font-bold w-full text-center">
-              Highest amount
+              TOP 5 Highest amount
             </div>
             <table class="text-left w-full border-collapse">
               <thead>
@@ -60,34 +60,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Bible</td>
+                <tr class="hover:bg-gray-200 transition duration-200" *ngFor="let order of stats.topItemsByAmount">
+                  <td class="py-4 px-6 border-b border-grey-light">{{order.itemName}}</td>
                   <td class="py-4 px-6 text-center border-b border-grey-light">
-                    11980
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    340
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    901
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    11950
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    459
+                    {{order.amount}}
                   </td>
                 </tr>
               </tbody>
@@ -100,7 +76,7 @@
         <div class="w-11/12 mx-auto">
           <div class="bg-white mb-6">
             <div class="py-4 text-xl font-bold w-full text-center">
-              Highest price per piece
+              TOP 5 Highest price per piece
             </div>
             <table class="text-left w-full border-collapse">
               <thead>
@@ -113,34 +89,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Bible</td>
+                <tr class="hover:bg-gray-200 transition duration-200" *ngFor="let order of stats.topItemsByPrice">
+                  <td class="py-4 px-6 border-b border-grey-light">{{order.itemName}}</td>
                   <td class="py-4 px-6 text-center border-b border-grey-light">
-                    11980
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    340
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    901
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    11950
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    459
+                    {{order.price |
+                    currency:currentCurrency.code:'symbol-narrow':'1.2-2'}}
                   </td>
                 </tr>
               </tbody>
@@ -153,7 +106,7 @@
         <div class="w-11/12 mx-auto">
           <div class="bg-white mb-6">
             <div class="py-4 text-xl font-bold w-full text-center">
-              Most expensive (amount x price)
+              TOP 5 Most expensive (amount x price)
             </div>
             <table class="text-left w-full border-collapse">
               <thead>
@@ -167,34 +120,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Bible</td>
+                <tr class="hover:bg-gray-200 transition duration-200" *ngFor="let order of stats.topItemsByTotalPrice">
+                  <td class="py-4 px-6 border-b border-grey-light">{{order.itemName}}</td>
                   <td class="py-4 px-6 text-center border-b border-grey-light">
-                    11980
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    340
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    901
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    11950
-                  </td>
-                </tr>
-                <tr class="hover:bg-grey-lighter">
-                  <td class="py-4 px-6 border-b border-grey-light">Blah</td>
-                  <td class="py-4 px-6 text-center border-b border-grey-light">
-                    459
+                    {{ (order.amount * order.price) |
+                    currency:currentCurrency.code:'symbol-narrow':'1.2-2' }}
                   </td>
                 </tr>
               </tbody>

@@ -107,7 +107,7 @@ export class PlannedOrdersComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.optionsFacade.getPlannedOrders()
+    this.optionsFacade.getPlannedOrders(true)
       .subscribe(orders => {
         this.plannedOrders = orders;
         // Getting currency sign for display if we have at least one planned order because

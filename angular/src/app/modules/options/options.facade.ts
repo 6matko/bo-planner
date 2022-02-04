@@ -21,11 +21,12 @@ export class OptionsFacade {
    * Method returns `Observable` with stored planned buy orders. If there are no planned orders
    * then it will look for them in DB, store and return observable with buy orders
    *
+   * @param {boolean} [force] Indicates if request to DB should be forced instead of using stored values
    * @return {Observable<BuyOrder[]>} `Observable` with planned buy orders
    * @memberof OptionsFacade
    */
-  getPlannedOrders(): Observable<BuyOrder[]> {
-    if (!this.optionsState.plannedOrders$.value?.length) {
+  getPlannedOrders(force?: boolean): Observable<BuyOrder[]> {
+    if (force || !this.optionsState.plannedOrders$.value?.length) {
       this.dbService.getAll<BuyOrder>('orders')
         .pipe(
           first(),
