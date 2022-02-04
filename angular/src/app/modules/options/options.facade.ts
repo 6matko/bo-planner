@@ -54,7 +54,7 @@ export class OptionsFacade {
   getCurrency() {
     // Checking if currency is stored in state. If not then trying to get and set it
     if (!this.optionsState.currency) {
-      const currentCurrency = CURRENCY.find(currency => currency.currencyId === this.optionsState.plannedOrders$.value[0]?.currencyId);
+      const currentCurrency = CURRENCY.find(currency => currency.currencyId === +this.optionsState.plannedOrders$.value[0]?.currencyId);
       this.setCurrency(currentCurrency);
     }
     return this.optionsState.currency;

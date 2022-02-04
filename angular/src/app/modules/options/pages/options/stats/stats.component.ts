@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Currency } from '../../../../../models/base.model';
 import { BuyOrder } from '../../../../../models/buy-order.model';
 import { PlannedOrderStats } from '../../../../../models/stats.model';
 import { OptionsFacade } from '../../../options.facade';
@@ -25,6 +26,7 @@ export class StatsComponent implements OnInit, OnDestroy {
    * @memberof StatsComponent
    */
   stats: PlannedOrderStats = new PlannedOrderStats();
+  currentCurrency: Currency;
   /**
    * Subject that is responsible for unsubscribing when component gets destroyed
    *
@@ -43,8 +45,8 @@ export class StatsComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(orders => {
+        this.currentCurrency = this.optionsFacade.getCurrency();
         this.createStats(orders);
-        console.log(orders);
       })
   }
 
@@ -62,9 +64,9 @@ export class StatsComponent implements OnInit, OnDestroy {
       this.stats.totalPrice += order.amount * order.price;
     }
 
-    this.stats.topItemsByAmount = orders.sort((a, b) => a.amount - b.amount);
-    this.stats.topItemsByPrice = orders.sort((a, b) => a.price - b.price);
-    this.stats.topItemsByPrice = orders.sort((a, b) => (a.price * a.amount) - (b.price * b.amount));
+    this.stats.topItemsByAmount = orders.sort((a, b) => a.amount - b.amount).splice(0, 5);
+    this.stats.topItemsByPrice = orders.sort((a, b) => a.price - b.price).splice(0, 5);
+    this.stats.topItemsByPrice = orders.sort((a, b) => (a.price * a.amount) - (b.price * b.amount)).splice(0, 5);
 
     // Fixing floating for price (Taking only 2 digits after comma)
     this.stats.totalPrice = +this.stats.totalPrice.toFixed(2);
