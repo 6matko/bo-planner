@@ -15,6 +15,10 @@ const routes: Routes = [
       {
         path: 'planned',
         loadChildren: () => import('./pages/options/planned-orders/planned-orders.module').then(m => m.PlannedOrdersModule)
+      },
+      {
+        path: 'stats',
+        loadChildren: () => import('./pages/options/stats/stats.module').then(m => m.StatsModule)
       }
     ],
   },
