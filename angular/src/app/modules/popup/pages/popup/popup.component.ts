@@ -161,17 +161,23 @@ export class PopupComponent implements OnInit, OnDestroy {
         mergeMap(tabId =>
           bindCallback<ItemInfo>(chrome.tabs.sendMessage.bind(this, tabId, { type: 'getInfoFromPage' }))()
             .pipe(
-              map(itemInfo => {
+              switchMap(itemInfo => {
                 // In case of error returning undefined
                 if (chrome.runtime.lastError) {
                   return undefined;
                 }
+
+                // Trying to get stored information in DB (if user added planned buy order). In case if there is no
+                // stored information then we are returning simple item info that we gathered from page (so price & amount wouldn't be pre-filled)
+                return this.getSavedInfoFromDB(itemInfo).pipe(map(itemFromDB => itemFromDB ?? itemInfo))
+              }),
+              map(itemInfo => {
                 // If everything is fine then returning tab Id and info about item
                 return {
                   itemInfo,
                   tabId,
                 };
-              })
+              }),
             )
         ),
         takeUntil(this.destroy$)
@@ -205,6 +211,23 @@ export class PopupComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Method requests information about item from DB in case if user placed planned order
+   *
+   * @private
+   * @param {ItemInfo} itemInfo Information about item to look in DB
+   * @return {Observable<ItemInfo>} Returns `Observable` with found item info
+   * @memberof PopupComponent
+   */
+  private getSavedInfoFromDB(itemInfo: ItemInfo): Observable<ItemInfo> {
+    return this.dbService.getByIndex('orders', 'itemName', itemInfo.itemName)
+      .pipe(map(boEntity => {
+        // Updating current info object with information from DB
+        Object.assign(itemInfo, boEntity);
+        return itemInfo;
+      }));
+  }
+
+  /**
    * Method gets information about item from page
    *
    * @private
@@ -221,12 +244,7 @@ export class PopupComponent implements OnInit, OnDestroy {
         switchMap(info => {
           // If we have info from page then getting stored information about this item from IndexedDB
           if (info) {
-            return this.dbService.getByIndex('orders', 'itemName', info.itemName)
-              .pipe(map(boEntity => {
-                // Updating current info object with information from DB
-                Object.assign(info, boEntity);
-                return info;
-              }))
+            return this.getSavedInfoFromDB(info);
             // If there is no info then reeturning same info object
           } else {
             return of(info);
