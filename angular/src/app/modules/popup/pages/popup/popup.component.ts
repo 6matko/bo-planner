@@ -75,6 +75,15 @@ export class PopupComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initInfo();
+    chrome.commands.onCommand.addListener((command) => {
+      switch (command) {
+        case 'openBO':
+          this.openPlaceBuyOrderWindow();
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   ngOnDestroy() {
