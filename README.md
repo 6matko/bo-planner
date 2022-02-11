@@ -15,6 +15,8 @@ _This extension was created to ease the process of buy order creation and give a
 - Quickly open native "Set buy order" modal (via popup)
   - Price & amount fields will be automatically filled with your values
 - Manually add items from any page (via popup)
+- Quickly open "Set buy order" modal on all open SCM Listing pages via one button click
+- Shortcuts to open popup with settings and buy order modal (works only with enabled popup)
 
 ## Built With
 
@@ -34,7 +36,11 @@ _This extension was created to ease the process of buy order creation and give a
 ### If you found a BUG, have a Feature Request or Question, feel free to visit [Issues](https://github.com/6matko/bo-planner/issues)
 
 ## Screenshots
+
 #### Active buy order display
-![Active buy order display](.github/images/bop-screen-1.png "Active buy order display")
+
+![Active buy order display](.github/images/bop-screen-1.png 'Active buy order display')
+
 #### Planned buy order
-![Planned buy order](.github/images/bop-screen-2.png "Planned buy order")
+
+![Planned buy order](.github/images/bop-screen-2.png 'Planned buy order')
