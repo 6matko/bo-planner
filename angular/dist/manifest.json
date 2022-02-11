@@ -44,5 +44,19 @@
         "https://steamcommunity.com/*"
       ]
     }
-  ]
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+B"
+      },
+      "description": "Open \"Buy order planner\" extension popup with setup."
+    },
+    "openBO": {
+      "suggested_key": {
+        "default": "Alt+V"
+      },
+      "description": "Open \"Place buy order\" window on the current page."
+    }
+  }
 }

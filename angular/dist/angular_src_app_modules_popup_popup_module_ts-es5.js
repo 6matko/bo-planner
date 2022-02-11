@@ -789,7 +789,20 @@
         _createClass(_PopupComponent, [{
           key: "ngOnInit",
           value: function ngOnInit() {
+            var _this2 = this;
+
             this.initInfo();
+            chrome.commands.onCommand.addListener(function (command) {
+              switch (command) {
+                case 'openBO':
+                  _this2.openPlaceBuyOrderWindow();
+
+                  break;
+
+                default:
+                  break;
+              }
+            });
           }
         }, {
           key: "ngOnDestroy",
@@ -882,7 +895,7 @@
         }, {
           key: "openPlaceBuyOrderWindowOnAllTabs",
           value: function openPlaceBuyOrderWindowOnAllTabs() {
-            var _this2 = this;
+            var _this3 = this;
 
             // Getting list of all SCM listing pages to open BO modals on them
             (0, rxjs__WEBPACK_IMPORTED_MODULE_5__.bindCallback)(chrome.tabs.query.bind(this, {
@@ -895,7 +908,7 @@
               });
             }), // Requesting information about item for each opened tab
             (0, rxjs_operators__WEBPACK_IMPORTED_MODULE_6__.mergeMap)(function (tabId) {
-              return (0, rxjs__WEBPACK_IMPORTED_MODULE_5__.bindCallback)(chrome.tabs.sendMessage.bind(_this2, tabId, {
+              return (0, rxjs__WEBPACK_IMPORTED_MODULE_5__.bindCallback)(chrome.tabs.sendMessage.bind(_this3, tabId, {
                 type: 'getInfoFromPage'
               }))().pipe((0, rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(function (itemInfo) {
                 // In case of error returning undefined
@@ -905,7 +918,7 @@
                 // stored information then we are returning simple item info that we gathered from page (so price & amount wouldn't be pre-filled)
 
 
-                return _this2.getSavedInfoFromDB(itemInfo).pipe((0, rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(function (itemFromDB) {
+                return _this3.getSavedInfoFromDB(itemInfo).pipe((0, rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(function (itemFromDB) {
                   return itemFromDB !== null && itemFromDB !== void 0 ? itemFromDB : itemInfo;
                 }));
               }), (0, rxjs_operators__WEBPACK_IMPORTED_MODULE_8__.map)(function (itemInfo) {
@@ -917,7 +930,7 @@
               }));
             }), (0, rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.takeUntil)(this.destroy$)).subscribe(function (result) {
               if (result) {
-                _this2.openPlaceBuyOrderWindow(result.tabId, result.itemInfo);
+                _this3.openPlaceBuyOrderWindow(result.tabId, result.itemInfo);
               }
             });
           }
@@ -976,7 +989,7 @@
         }, {
           key: "getItemInfoFromPage",
           value: function getItemInfoFromPage() {
-            var _this3 = this;
+            var _this4 = this;
 
             var tabId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.tabId;
             // Sending signal to content page to gather information from page itself
@@ -988,7 +1001,7 @@
             }), (0, rxjs_operators__WEBPACK_IMPORTED_MODULE_7__.switchMap)(function (info) {
               // If we have info from page then getting stored information about this item from IndexedDB
               if (info) {
-                return _this3.getSavedInfoFromDB(info); // If there is no info then reeturning same info object
+                return _this4.getSavedInfoFromDB(info); // If there is no info then reeturning same info object
               } else {
                 return (0, rxjs__WEBPACK_IMPORTED_MODULE_11__.of)(info);
               }
@@ -1004,7 +1017,7 @@
         }, {
           key: "initInfo",
           value: function initInfo() {
-            var _this4 = this;
+            var _this5 = this;
 
             this.getItemInfoFromPage().subscribe(function (info) {
               var _a; // Storing information for further usage ONLY if user is currently on item info page.
@@ -1013,13 +1026,13 @@
 
 
               if ((_a = info === null || info === void 0 ? void 0 : info.pageUrl) === null || _a === void 0 ? void 0 : _a.includes('/market/listings/')) {
-                _this4.itemInfo = info; // Updating form value
+                _this5.itemInfo = info; // Updating form value
 
-                _this4.boForm.patchValue(info); // Triggering change detection since there are changes that view needs to re-render
+                _this5.boForm.patchValue(info); // Triggering change detection since there are changes that view needs to re-render
                 // and for some reason it doesn't happen automatically. Maybe due chrome extension
 
 
-                _this4.cdr.detectChanges();
+                _this5.cdr.detectChanges();
               }
             });
           }
@@ -1033,7 +1046,7 @@
         }, {
           key: "createBuyOrder",
           value: function createBuyOrder() {
-            var _this5 = this;
+            var _this6 = this;
 
             // Creating new entity based on info on form
             var newBOEntity = new _models_buy_order_model__WEBPACK_IMPORTED_MODULE_1__.BuyOrder(this.boForm.value); // Checking if item with same name is already added
@@ -1045,34 +1058,34 @@
               } // Otherwise adding item
 
 
-              return _this5.dbService.add('orders', newBOEntity);
+              return _this6.dbService.add('orders', newBOEntity);
             }), (0, rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.takeUntil)(this.destroy$)).subscribe(function (result) {
               // If user manually adds item then displaying success and resetting form
               // so he can do it again
-              if (_this5.isManualAdding) {
-                _this5.boForm.reset({
+              if (_this6.isManualAdding) {
+                _this6.boForm.reset({
                   price: 0,
                   amount: 1
                 });
 
-                _this5.boForm.markAsUntouched();
+                _this6.boForm.markAsUntouched();
 
-                _this5.isManualSuccess = true;
+                _this6.isManualSuccess = true;
               } else {
                 // Updating form value with latest update
-                _this5.boForm.patchValue(result);
+                _this6.boForm.patchValue(result);
 
-                _this5.updateItemInfo(result);
+                _this6.updateItemInfo(result);
               } // Clearing error message when all is done
 
 
-              _this5.error = ''; // Triggering change detection since there are changes that view needs to re-render
+              _this6.error = ''; // Triggering change detection since there are changes that view needs to re-render
               // and for some reason it doesn't happen automatically. Maybe due chrome extension
 
-              _this5.cdr.detectChanges();
+              _this6.cdr.detectChanges();
             }, function (err) {
               // Setting error message for display
-              _this5.error = err;
+              _this6.error = err;
             });
           }
           /**
@@ -1085,7 +1098,7 @@
         }, {
           key: "updateBuyOrder",
           value: function updateBuyOrder() {
-            var _this6 = this;
+            var _this7 = this;
 
             // Updating current item info with data in form
             var updatedBuyOrder = Object.assign(this.itemInfo, this.boForm.value); // Creating entity for save
@@ -1094,13 +1107,13 @@
 
             this.dbService.update('orders', updatedBOEntity).pipe((0, rxjs_operators__WEBPACK_IMPORTED_MODULE_9__.takeUntil)(this.destroy$)).subscribe(function (results) {
               // Updating form value with updated entity. Otherwise we would have to search for it in all results
-              _this6.boForm.patchValue(updatedBOEntity);
+              _this7.boForm.patchValue(updatedBOEntity);
 
-              _this6.updateItemInfo(updatedBOEntity); // Triggering change detection since there are changes that view needs to re-render
+              _this7.updateItemInfo(updatedBOEntity); // Triggering change detection since there are changes that view needs to re-render
               // and for some reason it doesn't happen automatically. Maybe due chrome extension
 
 
-              _this6.cdr.detectChanges();
+              _this7.cdr.detectChanges();
             });
           }
           /**
@@ -1460,15 +1473,15 @@
         var _super2 = _createSuper(_AsyncSubject);
 
         function _AsyncSubject() {
-          var _this7;
+          var _this8;
 
           _classCallCheck(this, _AsyncSubject);
 
-          _this7 = _super2.apply(this, arguments);
-          _this7.value = null;
-          _this7.hasNext = false;
-          _this7.hasCompleted = false;
-          return _this7;
+          _this8 = _super2.apply(this, arguments);
+          _this8.value = null;
+          _this8.hasNext = false;
+          _this8.hasCompleted = false;
+          return _this8;
         }
 
         _createClass(_AsyncSubject, [{
@@ -1647,7 +1660,7 @@
       }
 
       function dispatch(state) {
-        var _this8 = this;
+        var _this9 = this;
 
         var self = this;
         var args = state.args,
@@ -1668,7 +1681,7 @@
 
             var value = innerArgs.length <= 1 ? innerArgs[0] : innerArgs;
 
-            _this8.add(scheduler.schedule(dispatchNext, 0, {
+            _this9.add(scheduler.schedule(dispatchNext, 0, {
               value: value,
               subject: subject
             }));
