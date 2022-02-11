@@ -9,6 +9,13 @@ export class BuyOrder extends BaseEntity {
      */
     itemName: string;
     /**
+     * Page URL
+     *
+     * @type {string}
+     * @memberof BuyOrder
+     */
+    pageUrl?: string;
+    /**
      * Buy order price
      *
      * @type {number}

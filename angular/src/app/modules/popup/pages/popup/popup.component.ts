@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { bindCallback, of, Subject, throwError } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { bindCallback, Observable, of, Subject, throwError } from 'rxjs';
+import { map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { CURRENCY } from '../../../../core/currencies';
 import { BuyOrder } from '../../../../models/buy-order.model';
 import { ItemInfo } from '../../../../models/item-info.model';
@@ -128,14 +128,59 @@ export class PopupComponent implements OnInit, OnDestroy {
    *
    * @memberof PopupComponent
    */
-  openPlaceBuyOrderWindow() {
-    chrome.tabs.sendMessage(this.tabId, {
+  /**
+   * Method sends signal to contentPage to open buy order modal
+   *
+   * @param {number} [tabId=this.tabId] Id of tab where to open buy order modal (by default current tab)
+   * @param {ItemInfo} [itemInfo=this.itemInfo] Information about item where to open buy order modal (by default current item)
+   * @memberof PopupComponent
+   */
+  openPlaceBuyOrderWindow(tabId: number = this.tabId, itemInfo: ItemInfo = this.itemInfo) {
+    chrome.tabs.sendMessage(tabId, {
       type: 'openBOModal',
       data: {
-        price: this.itemInfo.price,
-        amount: this.itemInfo.amount,
+        price: itemInfo.price,
+        amount: itemInfo.amount,
       }
     });
+  }
+
+  /**
+   * Method sends signal to contentPage to open buy order modal on every opened SCM listing page
+   *
+   * @memberof PopupComponent
+   */
+  openPlaceBuyOrderWindowOnAllTabs() {
+    // Getting list of all SCM listing pages to open BO modals on them
+    bindCallback<chrome.tabs.Tab[]>(chrome.tabs.query.bind(this, { url: 'https://steamcommunity.com/market/listings/*' }))()
+      .pipe(
+        // Getting list of tab IDs because we need only them.
+        // Using mergeMap to make concurency
+        mergeMap(tabs => tabs.map(tab => tab.id)),
+        // Requesting information about item for each opened tab
+        mergeMap(tabId =>
+          bindCallback<ItemInfo>(chrome.tabs.sendMessage.bind(this, tabId, { type: 'getInfoFromPage' }))()
+            .pipe(
+              map(itemInfo => {
+                // In case of error returning undefined
+                if (chrome.runtime.lastError) {
+                  return undefined;
+                }
+                // If everything is fine then returning tab Id and info about item
+                return {
+                  itemInfo,
+                  tabId,
+                };
+              })
+            )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(result => {
+        if (result) {
+          this.openPlaceBuyOrderWindow(result.tabId, result.itemInfo);
+        }
+      });
   }
 
   /**
@@ -160,14 +205,16 @@ export class PopupComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Method initializes popup based on information gathered from current page
+   * Method gets information about item from page
    *
    * @private
+   * @param {number} [tabId=this.tabId] Id of tab from which information gathernig should be done. By default current page
+   * @return {Observable<ItemInfo>} Returns `Observable` with item info
    * @memberof PopupComponent
    */
-  private initInfo() {
+  private getItemInfoFromPage(tabId: number = this.tabId): Observable<ItemInfo> {
     // Sending signal to content page to gather information from page itself
-    bindCallback<any>(chrome.tabs.sendMessage.bind(this, this.tabId, { type: 'getInfoFromPage' }))()
+    return bindCallback<ItemInfo>(chrome.tabs.sendMessage.bind(this, this.tabId, { type: 'getInfoFromPage' }))()
       .pipe(
         // If there was an error, returning undefined. Otherwise giving info from thee page
         map(info => chrome.runtime.lastError ? undefined : info),
@@ -186,7 +233,17 @@ export class PopupComponent implements OnInit, OnDestroy {
           }
         }),
         takeUntil(this.destroy$),
-      )
+      );
+  }
+
+  /**
+   * Method initializes popup based on information gathered from current page
+   *
+   * @private
+   * @memberof PopupComponent
+   */
+  private initInfo() {
+    this.getItemInfoFromPage()
       .subscribe(info => {
         // Storing information for further usage ONLY if user is currently on item info page.
         // Otherwise we can't get any information and should show informative message so user
